@@ -65,6 +65,12 @@ def parse_dict(obj: dict, model: Type[JsonModel]):
                             setattr(obj_model, key, val)
                             valid = 1
                             break
+                    elif (issubclass(attr_type, Enum)):
+                        if (type(val) == str):
+                            val = attr_type[val]
+                            setattr(obj_model, key, val)
+                            valid = 1
+                            break
                 if (not valid):
                     raise TypeError(f"{key} is not {attr_type} format")
             elif (issubclass(attr_type, Enum)):
