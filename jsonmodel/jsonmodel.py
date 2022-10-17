@@ -2,11 +2,15 @@ from enum import Enum
 import enum
 import json
 import typing
-from typing import Type
-from unittest import result
+from typing import Type, Any
 
 class JsonModel:
     pass
+
+def is_any(obj, attr_type):
+    if (attr_type == Any):
+        return (0, obj)
+    return (1, None)
 
 def is_model(obj, attr_type):
     if (type(attr_type) != type):
@@ -68,7 +72,7 @@ def is_union(obj, attr_type):
             return res
     return (2, None)
 
-parsers = [is_model, is_enum, is_default, is_list, is_union]
+parsers = [is_any, is_model, is_enum, is_default, is_list, is_union]
 
 def full_parser(obj, attr_type):
     for parser in parsers:
@@ -103,3 +107,4 @@ def parse_dict(obj: dict, model: Type[JsonModel]):
 def parse_model(obj: str, model: Type[JsonModel]):
     json_dump = json.loads(obj)
     return parse_dict(json_dump, model)
+
