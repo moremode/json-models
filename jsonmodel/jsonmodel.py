@@ -1,3 +1,4 @@
+from enum import Enum
 import json
 import typing
 from typing import Type
@@ -66,6 +67,10 @@ def parse_dict(obj: dict, model: Type[JsonModel]):
                             break
                 if (not valid):
                     raise TypeError(f"{key} is not {attr_type} format")
+            elif (issubclass(attr_type, Enum)):
+                if (type(val) == str):
+                    val = attr_type[val]
+                    setattr(obj_model, key, val)
             else:
                 raise TypeError(f"{key} invalid {attr_type} type")
             props.remove(key)
@@ -77,4 +82,4 @@ def parse_dict(obj: dict, model: Type[JsonModel]):
 
 def parse_model(obj: str, model: Type[JsonModel]):
     json_dump = json.loads(obj)
-    parse_dict(json_dump, model)
+    return parse_dict(json_dump, model)
