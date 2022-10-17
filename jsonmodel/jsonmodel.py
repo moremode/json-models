@@ -14,6 +14,9 @@ def parse_list(objs: list, attr_type: type):
     for obj in objs:
         if (type(obj) == dict and issubclass(attr_type, JsonModel)):
             obj = parse_dict(obj, attr_type)
+        elif (issubclass(attr_type, Enum)):
+            if (type(obj) == str):
+                obj = attr_type[obj]
         elif (type(obj) != attr_type):
             raise TypeError(f"{obj} is not {attr_type} format")
         output_list.append(obj)
