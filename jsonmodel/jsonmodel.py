@@ -3,6 +3,7 @@ import enum
 import json
 import typing
 from typing import Type
+from unittest import result
 
 class JsonModel:
     pass
@@ -87,7 +88,7 @@ def parse_dict(obj: dict, model: Type[JsonModel]):
             attr_type = getattr(model, key)
             res = full_parser(val, attr_type)
             if (res[0] == 0):
-                setattr(obj_model, key, val)
+                setattr(obj_model, key, res[1])
             elif (res[0] == 1):
                 raise TypeError(f"{val} is unknown type")
             else:
