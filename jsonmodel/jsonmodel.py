@@ -3,6 +3,28 @@ import enum
 import json
 import typing
 from typing import Type, Any
+import sys
+
+if (sys.version_info[0] < 3):
+    exit(0)
+
+def get_origin(attr_type):
+    if (sys.version_info[1] > 7):
+        return typing.get_origin(attr_type)
+    else:
+        try:
+            return attr_type.__origin__
+        except:
+            return None
+
+def get_args(attr_type):
+    if (sys.version_info[1] > 7):
+        return typing.get_args(attr_type)
+    else:
+        try:
+            return attr_type.__args__
+        except:
+            return None
 
 class JsonModel:
     pass
@@ -47,10 +69,10 @@ def parse_list(objs: list, attr_type: type):
     return output_list
 
 def is_list(obj, attr_type):
-    origin = typing.get_origin(attr_type)
+    origin = get_origin(attr_type)
     if (not origin is list):
         return (1, None)
-    list_args = typing.get_args(attr_type)
+    list_args = get_args(attr_type)
     if (len(list(list_args)) != 1):
         if (type(obj) != list):
             return (2, None)
@@ -62,10 +84,10 @@ def is_list(obj, attr_type):
         return (2, None)
 
 def is_union(obj, attr_type):
-    origin = typing.get_origin(attr_type)
+    origin = get_origin(attr_type)
     if (origin != typing.Union):
         return (1, None)
-    union_attrs = typing.get_args(attr_type)
+    union_attrs = get_args(attr_type)
     for union_type in union_attrs:
         res = full_parser(obj, union_type)
         if (res[0] == 0):
@@ -94,12 +116,12 @@ def parse_dict(obj: dict, model: Type[JsonModel]):
             if (res[0] == 0):
                 setattr(obj_model, key, res[1])
             elif (res[0] == 1):
-                raise TypeError(f"{val} is unknown type")
+                raise TypeError(f"{key} ::: {val} is unknown type")
             else:
-                raise TypeError(f"{val} is not {attr_type} format")
+                raise TypeError(f"{key} ::: {val} is not {attr_type} format")
             props.remove(key)
         else:
-            raise TypeError(f"Unexpected value {key}")
+            raise TypeError(f"Unexpected value {key} ::: {val}")
     for prop in props:
         setattr(obj_model, prop, None)
     return obj_model
