@@ -3,6 +3,7 @@ import enum
 import json
 import typing
 from typing import Type, Any
+from types import FunctionType
 import sys
 
 if (sys.version_info[0] < 3):
@@ -104,10 +105,10 @@ def full_parser(obj, attr_type):
     return (1, None)
 
 def get_class_props(cls):   
-    return [i[0] for i in cls.__dict__.items() if i[0][:1] != '_' and not callable(i[1])]
+    return [i[0] for i in cls.__dict__.items() if i[0][:1] != '_' and not isinstance(i[1], FunctionType)]
 
 def get_obj_props(obj):
-    return dict([(i[0], i[1]) for i in obj.__dict__.items() if i[0][:1] != '_' and not callable(i[1])])
+    return dict([(i[0], i[1]) for i in obj.__dict__.items() if i[0][:1] != '_' and not isinstance(i[1], FunctionType))
 
 def parse_dict(obj: dict, model: Type[JsonModel]):
     props = get_class_props(model)
