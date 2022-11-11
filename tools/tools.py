@@ -11,6 +11,8 @@ def p_generate_model(objs: dict, name: str="Model"):
             result_model = internal_model + result_model
         else:
             class_name = str(type(val)).split("'")[1]
+        if (class_name == "NoneType"):
+            class_name = "None"
         result_model += f"\t{key}: {class_name} = {class_name}\n"
     result_model += "\n"
     return result_model

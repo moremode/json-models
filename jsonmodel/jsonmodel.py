@@ -104,7 +104,10 @@ def full_parser(obj, attr_type):
     return (1, None)
 
 def get_class_props(cls):   
-    return [i for i in cls.__dict__.keys() if i[:1] != '_']
+    return [i[0] for i in cls.__dict__.items() if i[0][:1] != '_' and type(i[1]) != function]
+
+def get_obj_props(obj):
+    return dict([(i[0], i[1]) for i in obj.__dict__.items() if i[0][:1] != '_' and type(i[1]) != function])
 
 def parse_dict(obj: dict, model: Type[JsonModel]):
     props = get_class_props(model)
@@ -130,3 +133,5 @@ def parse_model(obj: str, model: Type[JsonModel]):
     json_dump = json.loads(obj)
     return parse_dict(json_dump, model)
 
+def dump_model(obj):
+    return json.dumps(get_obj_props(obj), indent=4)
