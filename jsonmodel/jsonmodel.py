@@ -135,4 +135,4 @@ def parse_model(obj: str, model: Type[JsonModel]):
     return parse_dict(json_dump, model)
 
 def dump_model(obj):
-    return json.dumps(obj, default=lambda o: get_obj_props(obj), sort_keys=True, indent=4)
+    return json.dumps(obj, default=lambda o: get_obj_props(o), sort_keys=True, indent=4)
