@@ -107,7 +107,7 @@ def get_class_props(cls):
     return [i[0] for i in cls.__dict__.items() if i[0][:1] != '_' and type(i[1]) != function]
 
 def get_obj_props(obj):
-    return dict([(i[0], i[1]) for i in obj.__dict__.items() if i[0][:1] != '_' and type(i[1]) != function])
+    return dict([(i[0], i[1]) for i in obj.__dict__.items() if i[0][:1] != '_' and not callable(i[1])])
 
 def parse_dict(obj: dict, model: Type[JsonModel]):
     props = get_class_props(model)
